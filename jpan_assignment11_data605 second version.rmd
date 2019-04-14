@@ -1,0 +1,111 @@
+---
+title: "jpan_data605_assignment 11"
+author: "Jun Pan"
+date: "April 12, 2019"
+output: html_document
+---
+
+
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(graphics)
+```
+
+
+Using the "cars" dataset in R, build a linear model for stopping distance as a function of speed and replicate the analysis of your textbook chapter 3 (visualization, quality evaluation of the model, and residual analysis.) 
+
+
+Consider some data on the speed and stopping distances of cars in the 1920s. We plot the data and fit a linear model:
+
+#Visualization
+```{r}
+data(cars)
+```
+
+```{r}
+dim(cars)
+```
+
+```{r}
+head(cars)
+```
+```{r}
+str(cars)
+```
+
+```{r}
+summary(cars)
+```
+The cars dataset gives "speed"" and stopping distances of Cars. This dataset is a data frame with 50 rows and 2 variables. The rows refer to cars and the variables refer to speed (the numeric Speed in mph) and dist (the numeric stopping distance in ft.). As the summary output above shows, the cars dataset's speed variable varies from cars with speed of 4 mph to 25 mph. When it comes to distance to stop, there are cars that can stop in 2 feet and cars that need 120 feet to come to a stop.
+
+
+```{r}
+plot (dist ~ speed, cars, ylab="distance")
+```
+
+
+```{r}
+g <- lm(dist ~ speed, cars)
+summary (g)
+```
+
+Residuals are essentially the difference between the actual observed response values and the response values that the model predicted. When assessing how well the model fit the data, we should look for a symmetrical distribution across these points on the mean value zero (0). Here, we can see that the distribution of the residuals do not appear to be strongly symmetrical which means the model predicts certain points are fall far away from the actual observed points.
+
+
+The coefficient Estimate contains two rows; the first one is the intercept.  The intercept is the expected value of the distance required for a car to stop when we consider the average speed of all cars in the dataset. The second row in the Coefficients is the slope, for every 1 mph increase in the speed of a car, the required distance to stop goes up by 3.9324 feet.
+
+
+The coefficient Standard Error measures the average amount that the coefficient estimates vary from the actual average value of our response variable. We'd ideally want a lower number relative to its coefficients.  It means the required distance for a car to stop can vary by 0.4155 feet. 
+ 
+
+The coefficient t-value is a measure of how many standard deviations our coefficient estimate is far away from 0. The t-statistic values (9.4) are relatively far away from zero and are large relative to the standard error, which could indicate a relationship exists. In general, t-values are also used to compute p-values.
+
+The Pr(>t) acronym found in the model output relates to the probability of observing any value equal or larger than t. A small p-value indicates that it is unlikely we will observe a relationship between the predictor (speed) and response (dist) variables due to chance. Typically, a p-value of 5% or less is a good cut-off point. In our model example, the p-values are very close to zero. 
+
+
+The Residual Standard Error is the average amount that the response (dist) will deviate from the true regression line. The actual distance required to stop can deviate from the true regression line by approximately 15.38 feet on average. 
+Multiple R-squared, Adjusted R-squared
+
+The R-squared (R2) statistic provides a measure of how well the model is fitting the actual data. It usually lies between 0 and 1. In our example, the R2 we get is 0.6511. Or roughly 65% of the variance found in the response variable (dist) can be explained by the predictor variable (speed). 
+
+This means that our model is a good fit but not an excellent fit for the data provided.
+
+
+```{r}
+attach(cars) 
+plot(speed, dist)
+abline(g)
+```
+
+
+
+`
+#Residual Analysis
+```{r}
+plot(fitted(g), resid(g))
+```
+
+Comparing residual values versus the actual observed data, our moduel has a tendecy to underestimate the actual value for the data. It is a good model with a lot of the data clutterd near the zero line. But a few positive outliers (~+40 residual values) as the value for (speed) increases.  So for lower speeds, the model can better predit the stopping distance than with higher speeds.
+
+```{r}
+qqnorm(resid(g)) 
+qqline(resid(g))
+```
+
+Another use of residuals is to generate a quantile to quantile plot of sample data quantiles against theoretical quantiles (quantile values as predicted by the model). It is a normal distribution of the observed data. But we can see a divergence though towards the higher positive quantiles.
+
+Besides the residual analysis, the quantile to quantile (Q-Q plot) analysis also shows that the model is an excellent representation of the observed data execpt for larger values of the observed data.
+For speeds less than 20 (75th quantile), the model is an excellent predictor of stopping distance.
+
+
+
+
+
+
+
+
+
